@@ -30,9 +30,13 @@ class HomeScreen extends StatelessWidget {
           onRefresh: () async {
             viewModel.getTodos();
           },
-          child: const Padding(
-            padding: EdgeInsets.all(10),
-            child: TodosListWidget(),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: viewModel.todosList.isNotEmpty
+                ? const TodosListWidget()
+                : const Center(
+                    child: Text('TODO list empty, create one'),
+                  ),
           ),
         ),
         floatingActionButton: FloatingActionButton(

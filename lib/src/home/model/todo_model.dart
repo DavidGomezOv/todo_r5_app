@@ -5,6 +5,8 @@ part 'todo_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TodoModel {
+  @JsonKey(name: 'id')
+  final String? id;
   @JsonKey(name: 'title')
   final String? title;
   @JsonKey(name: 'description')
@@ -16,6 +18,7 @@ class TodoModel {
   bool isSelected = false;
 
   TodoModel(
+    this.id,
     this.title,
     this.description,
     this.completed,

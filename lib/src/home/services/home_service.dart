@@ -36,4 +36,11 @@ class HomeService extends BaseReactiveService {
       }
     }).whenComplete(() => loadingReactiveValue.value = false);
   }
+
+  Future<void> createTodo(TodoModel todoModel) async {
+    loadingReactiveValue.value = true;
+    return _repository
+        .createTodo(todoModel)
+        .whenComplete(() => loadingReactiveValue.value = false);
+  }
 }

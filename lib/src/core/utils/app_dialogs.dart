@@ -16,3 +16,20 @@ void showErrorSheet(
   );
   okClick?.call();
 }
+
+void showCreateTodoSheet({
+  Function(Map<String, String> todoData)? primaryClick,
+  Function? cancelFunction,
+}) async {
+  var sheetResponse = await bottomSheetService.showCustomSheet(
+    title: 'Create a new TODO',
+    description: 'In this menu you can create a new TODO',
+    variant: DialogType.createTodo,
+    isScrollControlled: true,
+  );
+  if (sheetResponse?.confirmed == true) {
+    primaryClick?.call(sheetResponse?.data);
+  } else {
+    cancelFunction?.call();
+  }
+}

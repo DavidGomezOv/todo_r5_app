@@ -15,4 +15,13 @@ class HomeDataSource extends BaseDatasource {
     final data = await firebase.collection(Constants.todosCollection).get();
     return data.docs.map((e) => TodoModel.fromJson(e.data())).toList();
   }
+
+  Future<void> createTodo(TodoModel todoModel) async {
+    await validateConnection();
+    final firebase = FirebaseFirestore.instance;
+    firebase
+        .collection(Constants.todosCollection)
+        .doc(todoModel.id)
+        .set(todoModel.toJson());
+  }
 }

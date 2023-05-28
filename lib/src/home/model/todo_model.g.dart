@@ -9,13 +9,13 @@ part of 'todo_model.dart';
 TodoModel _$TodoModelFromJson(Map<String, dynamic> json) => TodoModel(
       json['title'] as String?,
       json['description'] as String?,
-      json['state'] as String?,
-      json['creation_date'] as String?,
+      json['completed'] as bool?,
+      TodoModel._fromJson(json['creation_date'] as Timestamp),
     );
 
 Map<String, dynamic> _$TodoModelToJson(TodoModel instance) => <String, dynamic>{
       'title': instance.title,
       'description': instance.description,
-      'state': instance.state,
-      'creation_date': instance.creationDate,
+      'completed': instance.completed,
+      'creation_date': TodoModel._toJson(instance.creationDate),
     };

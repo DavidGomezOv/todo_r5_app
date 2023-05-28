@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:todo_r5_app/src/core/base/base_screen.dart';
+import 'package:todo_r5_app/src/home/ui/widgets/todos_list_widget.dart';
 import 'package:todo_r5_app/src/home/view_model/home_view_model.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,10 +14,32 @@ class HomeScreen extends StatelessWidget {
       builder: (context, viewModel, child) => BaseScreen(
         loading: viewModel.loading,
         baseColor: Colors.white,
-        brightnessColor:  Brightness.dark,
-        body: const Center(
-          child: Text('HomeScreen', style: TextStyle(color: Colors.black)),
+        appBar: AppBar(
+          title: const Text('TODO App'),
+          actions: [
+            IconButton(
+              onPressed: viewModel.openOptions
+                  ? viewModel.onSettingsTap
+                  : viewModel.onDeleteTodos,
+              icon:
+                  Icon(viewModel.openOptions ? Icons.delete : Icons.more_horiz),
+            ),
+          ],
         ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            viewModel.getTodos();
+          },
+          child: const Padding(
+            padding: EdgeInsets.all(10),
+            child: TodosListWidget(),
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: viewModel.createTodo,
+          child: const Icon(Icons.add),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       ),
     );
   }

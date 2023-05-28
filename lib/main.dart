@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.home,
       navigatorKey: appNavigatorKey,
       routes: Routes.routes,
-      theme: ThemeData(brightness: Brightness.dark),
     );
   }
 }

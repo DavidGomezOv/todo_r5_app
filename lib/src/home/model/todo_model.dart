@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'todo_model.g.dart';
@@ -8,15 +9,16 @@ class TodoModel {
   final String? title;
   @JsonKey(name: 'description')
   final String? description;
-  @JsonKey(name: 'state')
-  final String? state;
-  @JsonKey(name: 'creation_date')
-  final String? creationDate;
+  @JsonKey(name: 'completed')
+  final bool? completed;
+  @JsonKey(name: 'creation_date', fromJson: _fromJson, toJson: _toJson)
+  final DateTime? creationDate;
+  bool isSelected = false;
 
   TodoModel(
     this.title,
     this.description,
-    this.state,
+    this.completed,
     this.creationDate,
   );
 
@@ -24,4 +26,8 @@ class TodoModel {
       _$TodoModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TodoModelToJson(this);
+
+  static DateTime? _fromJson(Timestamp data) => data.toDate();
+
+  static Timestamp _toJson(DateTime? time) => Timestamp.fromDate(time!);
 }

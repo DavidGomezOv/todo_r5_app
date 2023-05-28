@@ -43,6 +43,7 @@ dependencies:
   connectivity_plus: ^4.0.1
   json_annotation: ^4.8.1
   json_serializable: ^6.6.2
+  cloud_firestore: ^4.7.1
 
 dev_dependencies:
   flutter_test:

@@ -13,7 +13,11 @@ class HomeRepository {
     return _homeDataSource.getTodos();
   }
 
-  Future<void> createTodo(TodoModel todoModel) {
-    return _homeDataSource.createTodo(todoModel);
+  Future<void> saveTodo(TodoModel todoModel) {
+    return _homeDataSource.saveTodo(todoModel);
+  }
+
+  Future<void> deleteTodos(List<TodoModel?> todos) {
+    return _homeDataSource.deleteTodos(todos);
   }
 }

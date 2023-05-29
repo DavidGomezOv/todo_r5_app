@@ -33,3 +33,26 @@ void showCreateTodoSheet({
     cancelFunction?.call();
   }
 }
+
+void showInformativeDialog({
+  required String title,
+  required String message,
+  Function? primaryClick,
+  Function? secondaryClick,
+}) async {
+  final sheetResponse = await bottomSheetService.showCustomSheet(
+    variant: DialogType.informative,
+    title: title,
+    description: message,
+    mainButtonTitle: 'Accept',
+    secondaryButtonTitle: 'Cancel',
+  );
+  switch (sheetResponse?.confirmed) {
+    case true:
+      primaryClick?.call();
+      break;
+    case false:
+      secondaryClick?.call();
+      break;
+  }
+}

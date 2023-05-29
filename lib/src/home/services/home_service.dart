@@ -10,6 +10,7 @@ class HomeService extends BaseReactiveService {
 
   final openOptions = ReactiveValue<bool>(false);
   final todosList = ReactiveValue<List<TodoModel>>([]);
+  final todosToDeleteList = ReactiveValue<List<TodoModel>>([]);
 
   @factoryMethod
   HomeService.from(this._repository) {
@@ -17,6 +18,7 @@ class HomeService extends BaseReactiveService {
       loadingReactiveValue,
       openOptions,
       todosList,
+      todosToDeleteList,
     ]);
   }
 
@@ -37,10 +39,17 @@ class HomeService extends BaseReactiveService {
     }).whenComplete(() => loadingReactiveValue.value = false);
   }
 
-  Future<void> createTodo(TodoModel todoModel) async {
+  Future<void> saveTodo(TodoModel todoModel) async {
     loadingReactiveValue.value = true;
     return _repository
-        .createTodo(todoModel)
+        .saveTodo(todoModel)
+        .whenComplete(() => loadingReactiveValue.value = false);
+  }
+
+  Future<void> deleteTodos(List<TodoModel?> todos) async {
+    loadingReactiveValue.value = true;
+    return _repository
+        .deleteTodos(todos)
         .whenComplete(() => loadingReactiveValue.value = false);
   }
 }

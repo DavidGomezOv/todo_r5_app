@@ -12,17 +12,31 @@ class HomeScreen extends StatelessWidget {
     return ViewModelBuilder<HomeViewModel>.reactive(
       viewModelBuilder: () => HomeViewModel(),
       builder: (context, viewModel, child) => BaseScreen(
+        onBackPressed: () async {
+          viewModel.onSettingsTap();
+          return false;
+        },
         loading: viewModel.loading,
         baseColor: Colors.white,
         appBar: AppBar(
-          title: const Text('TODO App'),
+          title: viewModel.openOptions
+              ? IconButton(
+                  onPressed: viewModel.onSettingsTap,
+                  icon: const Icon(Icons.arrow_back),
+                )
+              : const Text('TODO App'),
           actions: [
             IconButton(
               onPressed: viewModel.openOptions
-                  ? viewModel.onSettingsTap
-                  : viewModel.onDeleteTodos,
-              icon:
-                  Icon(viewModel.openOptions ? Icons.delete : Icons.more_horiz),
+                  ? viewModel.areTodosToDelete
+                      ? viewModel.onDeleteTodos
+                      : null
+                  : viewModel.onSettingsTap,
+              icon: Icon(viewModel.openOptions
+                  ? viewModel.areTodosToDelete
+                      ? Icons.delete
+                      : null
+                  : Icons.more_horiz),
             ),
           ],
         ),

@@ -16,6 +16,11 @@ class HomeViewModel extends AppBaseViewModel {
 
   List<TodoModel> get todosList => _homeService.todosList.value;
 
+  List<TodoModel?> get todosToDeleteList =>
+      _homeService.todosToDeleteList.value;
+
+  bool get areTodosToDelete => todosToDeleteList.isNotEmpty;
+
   TextEditingController controllerTitle = TextEditingController();
   TextEditingController controllerDescription = TextEditingController();
 
@@ -34,8 +39,6 @@ class HomeViewModel extends AppBaseViewModel {
     });
   }
 
-  void onTodoTap(TodoModel todoModel) {}
-
   void createTodo() {
     showCreateTodoSheet(
       primaryClick: (todoData) {
@@ -52,24 +55,69 @@ class HomeViewModel extends AppBaseViewModel {
   }
 
   void saveTodo(TodoModel todoModel) {
-    _homeService.createTodo(todoModel).then((value) {
+    _homeService.saveTodo(todoModel).then((value) {
       getTodos();
     }).catchError((error) {
       handleApiResponse(error.toString());
     });
   }
 
+  void onTodoLongTap(TodoModel todoModel) {
+    onSettingsTap();
+    onTodoDeleteCheckSelected(todoModel);
+  }
+
   void onSettingsTap() {
+    if (openOptions) {
+      for (var element in todosList) {
+        element.isSelected = false;
+      }
+      _homeService.todosToDeleteList.value.clear();
+    }
     _homeService.openOptions.value = !openOptions;
   }
 
-  void onDeleteTodos() {
-    _homeService.openOptions.value = !openOptions;
+  Future<void> onDeleteTodos() async {
+    showInformativeDialog(
+      title: 'Delete',
+      message: 'Are you sure you want to delete the selected TODOs',
+      primaryClick: () async {
+        await _homeService.deleteTodos(todosToDeleteList).then((value) {
+          _homeService.todosList.value = [];
+          getTodos();
+          _homeService.openOptions.value = !openOptions;
+        }).catchError((error) {
+          handleApiResponse(error.toString());
+        });
+      },
+      secondaryClick: () => onSettingsTap(),
+    );
   }
 
-  void onTodoCheckSelected(TodoModel todoModel) {
+  void onTodoDeleteCheckSelected(TodoModel todoModel) {
     todoModel.isSelected = !todoModel.isSelected;
     notifyListeners();
+    if (todoModel.isSelected) {
+      _homeService.todosToDeleteList.value.add(todoModel);
+    } else {
+      _homeService.todosToDeleteList.value.remove(todoModel);
+    }
+    if (todosToDeleteList.isEmpty) {
+      onSettingsTap();
+    }
+  }
+
+  void onTodoCompletedCheckSelected(TodoModel todoModel) {
+    showInformativeDialog(
+      title: 'Mark as complete',
+      message:
+          'Are you sure you want to mark as ${todoModel.completed! ? 'uncompleted' : 'completed'} the selected TODO',
+      primaryClick: () async {
+        todoModel.completed = !todoModel.completed!;
+        notifyListeners();
+        saveTodo(todoModel);
+      },
+    );
   }
 
   @override

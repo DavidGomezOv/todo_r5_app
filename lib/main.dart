@@ -6,6 +6,7 @@ import 'package:todo_r5_app/firebase_options.dart';
 import 'package:todo_r5_app/routes.dart';
 import 'package:todo_r5_app/src/core/di/app_component.dart';
 import 'package:todo_r5_app/src/core/dialogs/error_bottom_sheet.dart';
+import 'package:todo_r5_app/src/core/dialogs/informative_bottom_sheet.dart';
 import 'package:todo_r5_app/src/core/dialogs/input_new_todo_center_sheet.dart';
 import 'package:todo_r5_app/src/core/enums/enums.dart';
 
@@ -26,6 +27,8 @@ void _setupBottomSheetUi() {
         ErrorBottomSheet(request: sheetRequest, completer: completer),
     DialogType.createTodo: (context, sheetRequest, completer) =>
         InputNewTodoCenterSheet(request: sheetRequest, completer: completer),
+    DialogType.informative: (context, sheetRequest, completer) =>
+        InformativeBottomSheet(request: sheetRequest, completer: completer),
   };
   bottomSheetService.setCustomSheetBuilders(builders);
 }

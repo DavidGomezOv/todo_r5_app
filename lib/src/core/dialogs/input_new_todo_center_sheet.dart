@@ -46,6 +46,7 @@ class InputNewTodoCenterSheet extends StatelessWidget {
                       ),
                       const Spacer(),
                       IconButton(
+                        visualDensity: VisualDensity.compact,
                         padding: EdgeInsets.zero,
                         icon: const Icon(
                           Icons.close,

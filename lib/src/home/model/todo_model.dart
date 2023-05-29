@@ -12,7 +12,7 @@ class TodoModel {
   @JsonKey(name: 'description')
   final String? description;
   @JsonKey(name: 'completed')
-  final bool? completed;
+  bool? completed;
   @JsonKey(name: 'creation_date', fromJson: _fromJson, toJson: _toJson)
   final DateTime? creationDate;
   bool isSelected = false;

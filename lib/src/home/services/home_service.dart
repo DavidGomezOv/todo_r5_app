@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 import 'package:stacked/stacked.dart';
 import 'package:todo_r5_app/src/core/base/base_reactive_service.dart';
@@ -11,6 +13,7 @@ class HomeService extends BaseReactiveService {
   final openOptions = ReactiveValue<bool>(false);
   final todosList = ReactiveValue<List<TodoModel>>([]);
   final todosToDeleteList = ReactiveValue<List<TodoModel>>([]);
+  StreamSubscription<dynamic>? streamSubscription;
 
   @factoryMethod
   HomeService.from(this._repository) {
@@ -22,21 +25,36 @@ class HomeService extends BaseReactiveService {
     ]);
   }
 
-  Future<dynamic> getTodos() async {
+  Future<dynamic> getTodosStream() async {
+    streamSubscription?.cancel();
     loadingReactiveValue.value = true;
-    return _repository.getTodos().then((value) {
-      if (value is List<TodoModel>) {
-        if (value.isNotEmpty) {
-          value.sort(
-            (a, b) => b.creationDate!.compareTo(a.creationDate!),
-          );
-          value.sort(
-            (a, b) => !b.completed! ? 1 : -1,
-          );
-        }
-        todosList.value = value;
+    final stream = await _repository.getTodosStream();
+    streamSubscription = stream.listen((event) {
+      todosList.value.clear();
+      notifyListeners();
+      loadingReactiveValue.value = false;
+      List<TodoModel> todos = [];
+      for (var e in event.docs) {
+        todos.add(TodoModel.fromJson(e.data()));
       }
-    }).whenComplete(() => loadingReactiveValue.value = false);
+      final List<TodoModel> completedItems = [];
+      if (todos.isNotEmpty) {
+        for (final element in todos) {
+          if (element.completed!) {
+            completedItems.add(element);
+          } else {
+            todosList.value.add(element);
+          }
+        }
+        completedItems.sort(
+          (a, b) => b.creationDate!.compareTo(a.creationDate!),
+        );
+        todosList.value.sort(
+          (a, b) => b.creationDate!.compareTo(a.creationDate!),
+        );
+      }
+      todosList.value.addAll(completedItems);
+    });
   }
 
   Future<void> saveTodo(TodoModel todoModel) async {

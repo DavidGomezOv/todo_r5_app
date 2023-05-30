@@ -25,7 +25,7 @@ class HomeViewModel extends AppBaseViewModel {
   TextEditingController controllerDescription = TextEditingController();
 
   HomeViewModel() {
-    getTodos();
+    getTodosStream();
   }
 
   @override
@@ -33,13 +33,13 @@ class HomeViewModel extends AppBaseViewModel {
         _homeService,
       ];
 
-  void getTodos() {
-    _homeService.getTodos().catchError((error) {
+  void getTodosStream() {
+    _homeService.getTodosStream().catchError((error) {
       handleApiResponse(error.toString());
     });
   }
 
-  void createTodo() {
+  Future<void> createTodo() async {
     showCreateTodoSheet(
       primaryClick: (todoData) {
         final todoModel = TodoModel(
@@ -55,9 +55,7 @@ class HomeViewModel extends AppBaseViewModel {
   }
 
   void saveTodo(TodoModel todoModel) {
-    _homeService.saveTodo(todoModel).then((value) {
-      getTodos();
-    }).catchError((error) {
+    _homeService.saveTodo(todoModel).catchError((error) {
       handleApiResponse(error.toString());
     });
   }
@@ -83,8 +81,6 @@ class HomeViewModel extends AppBaseViewModel {
       message: 'Are you sure you want to delete the selected TODOs',
       primaryClick: () async {
         await _homeService.deleteTodos(todosToDeleteList).then((value) {
-          _homeService.todosList.value = [];
-          getTodos();
           _homeService.openOptions.value = !openOptions;
         }).catchError((error) {
           handleApiResponse(error.toString());
@@ -105,6 +101,10 @@ class HomeViewModel extends AppBaseViewModel {
     if (todosToDeleteList.isEmpty) {
       onSettingsTap();
     }
+  }
+
+  void showTodoDetail(BuildContext context, TodoModel todoModel) {
+    showTodoDetailDialog(context: context, todoModel: todoModel);
   }
 
   void onTodoCompletedCheckSelected(TodoModel todoModel) {

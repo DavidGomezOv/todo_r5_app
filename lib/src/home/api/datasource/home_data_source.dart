@@ -16,6 +16,12 @@ class HomeDataSource extends BaseDatasource {
     return data.docs.map((e) => TodoModel.fromJson(e.data())).toList();
   }
 
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getTodosStream() async {
+    await validateConnection();
+    final db = FirebaseFirestore.instance;
+    return db.collection(Constants.todosCollection).snapshots();
+  }
+
   Future<void> saveTodo(TodoModel todoModel) async {
     await validateConnection();
     final firebase = FirebaseFirestore.instance;

@@ -9,8 +9,12 @@ class TodoModel {
   final String? id;
   @JsonKey(name: 'title')
   final String? title;
+  @JsonKey(name: 'translated_title')
+  String? translatedTitle;
   @JsonKey(name: 'description')
   final String? description;
+  @JsonKey(name: 'translated_description')
+  String? translatedDescription;
   @JsonKey(name: 'completed')
   bool? completed;
   @JsonKey(name: 'creation_date', fromJson: _fromJson, toJson: _toJson)

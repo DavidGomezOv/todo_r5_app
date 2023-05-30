@@ -42,14 +42,22 @@ class HomeScreen extends StatelessWidget {
         ),
         body: RefreshIndicator(
           onRefresh: () async {
-            viewModel.getTodos();
+            viewModel.getTodosStream();
           },
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: viewModel.todosList.isNotEmpty
                 ? const TodosListWidget()
-                : const Center(
-                    child: Text('TODO list empty, create one'),
+                : Stack(
+                    children: [
+                      const Center(
+                        child: Text(
+                          'TODO list empty, create one',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      ListView(),
+                    ],
                   ),
           ),
         ),

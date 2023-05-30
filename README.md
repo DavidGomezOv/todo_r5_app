@@ -2,6 +2,10 @@
 
 A new Flutter project.
 
+## iOS Set up
+- cd ios
+- pod install --repo-update
+
 ## Getting Started
 
 - flutter clean

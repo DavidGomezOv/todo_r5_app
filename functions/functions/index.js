@@ -31,32 +31,38 @@ exports.translateText = functions.firestore
     const todoObject = snap.data();
     const itemDocRef = admin.firestore().collection("todos").doc(todoObject.id);
 
-    //APIKEY AIzaSyDSN7XsECK7t5Trd-z2CO_1iI5kpMvhbNQ
+    let apikey = "";
+
+    var doc = await admin.firestore().collection("apikey").doc("apikey").get();
+    apikey = doc.data().apikey;
+
     await axios
       .get("https://translation.googleapis.com/language/translate/v2", {
         params: {
-          key: "AIzaSyDSN7XsECK7t5Trd-z2CO_1iI5kpMvhbNQ",
+          key: apikey,
           target: "en",
           q: todoObject.title,
         },
       })
       .then((response) => {
         itemDocRef.update({
-          "translated_title": response.data.data.translations[0].translatedText.toString(),
+          "translated_title":
+            response.data.data.translations[0].translatedText.toString(),
         });
       });
 
     return await axios
       .get("https://translation.googleapis.com/language/translate/v2", {
         params: {
-          key: "AIzaSyDSN7XsECK7t5Trd-z2CO_1iI5kpMvhbNQ",
+          key: apikey,
           target: "en",
           q: todoObject.description,
         },
       })
       .then((response) => {
         itemDocRef.update({
-          "translated_description": response.data.data.translations[0].translatedText.toString(),
+          "translated_description":
+            response.data.data.translations[0].translatedText.toString(),
         });
       });
   });
